@@ -59,18 +59,18 @@ class GoodsController extends Controller
                 //>>调用判断商品分类是否是最后一级分类的方法,返回true才执行
                 if($model->isCategory()){
                     //>>将上传的文件赋值给上传文件对象
-                    //$model->logo_file = UploadedFile::getInstance($model,'logo_file');
+                    $model->logo_file = UploadedFile::getInstance($model,'logo_file');
                     //>>验证商品和详情
                     if($model->validate()){
                         //判断是否上传logo
-                        /*if($model->logo_file){
+                        if($model->logo_file){
                             //重命名
                             $fileName = 'upload/goods/'.uniqid().'.'.$model->logo_file->extension;
                             //保存图片到服务器
                             $model->logo_file->saveAs($fileName,false);
                             //保存名称到logo
                             $model->logo = $fileName;
-                        }*/
+                        }
 
                         //判断是否有当天的记录
                         $goods_count = GoodsDayCount::findOne(['day'=>date('Ymd')]);
@@ -104,6 +104,8 @@ class GoodsController extends Controller
                             \Yii::$app->session->addFlash('success','添加商品成功');
                             return $this->redirect(['goods/index']);
                         }
+                    }else{
+                        var_dump($model->getErrors());exit;
                     }
                 }else{
                     $model->addError('goods_category_id','只能选择最后一层分类');

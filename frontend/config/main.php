@@ -18,7 +18,7 @@ return [
         ],
         'user' => [
             'identityClass' => \frontend\models\Member::className(),
-
+            'loginUrl' => ['member/login'],
             'enableAutoLogin' => true,
             'identityCookie' => ['name' => '_identity-frontend', 'httpOnly' => true],
         ],
@@ -45,7 +45,9 @@ return [
             'rules' => [
             ],
         ],
-
+        'cartCookieHandler' => [
+            'class' => frontend\components\CartCookieHandler::className(),
+        ]
     ],
     'params' => $params,
 ];

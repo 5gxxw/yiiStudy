@@ -49,7 +49,7 @@ $str = '保存登录信息';
 echo $form->field($model,'rememberMe',[
     'options' => ['tag' => 'li','style'=>'padding: 10px 0;'],
     'labelOptions' => [''],
-])->checkbox(['style'=>'margin-left:60px']);
+])->checkbox(['style'=>'margin-left:60px']).$str;
 
 //>>5.提交按钮
 echo '<li><label for="">&nbsp;</label>';

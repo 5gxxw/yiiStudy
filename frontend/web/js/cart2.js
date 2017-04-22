@@ -20,6 +20,23 @@ $(function(){
 		$(this).parent().addClass("cur").siblings().removeClass("cur");
 	});
 
+
+	//>>点击收货人执行的事件
+    $("input[name=address]").click(function(){
+        $(this).parent().addClass("cur").siblings().removeClass("cur");
+    });
+
+	$("#consignee").click(function () {
+		//>>1.  获取收货人信息id
+		var li = $("#data-consignee").find(".cur");
+		var id = li.find("input").val();
+        //>>发起ajax请求
+        $.post("/order/ajax?filter=consignee",{site_id:id},function (data) {
+            console.debug(data);
+        });
+    });
+
+
 	//送货方式修改
 	$("#delivery_modify").click(function(){
 		$(this).hide();
@@ -27,9 +44,36 @@ $(function(){
 		$(".delivery_select").show();
 	})
 
-	$("input[name=delivery]").click(function(){
+
+	//>>确认收货方式
+	$("#confirm_deliver").click(function(){
+
+        //>>获取到选中的收货方式id和收货方式名称,运费
+        var tr = $("#deliver_goods").find('.cur');
+        var id =tr.find("input").val();
+        var name = tr.find("td:first").text();
+        var delivery_price = tr.find("td:eq(1)").text();
+        //>>计算应付总金额
+        var total_price = parseInt($("#total_prices").text());
+        var price = total_price-delivery_price;
+        $("#price").text(price);
+        //>>发起ajax请求
+		$.post("/order/ajax?filter=deliver",{delivery_id:id,delivery_name:name,delivery_price:delivery_price,price:price},function (data) {
+			console.debug(data);
+        });
+
+    });
+
+
+    $("input[name=delivery]").click(function(){
 		$(this).parent().parent().addClass("cur").siblings().removeClass("cur");
-	});
+
+		//>>获取到点击的tr的运费
+		var price = $(this).closest("tr").find("td:eq(1)").text();
+		//>>显示运费
+		$("#delivery_price").text(price);
+        // console.debug(price);
+    });
 
 	//支付方式修改
 	$("#pay_modify").click(function(){
@@ -37,6 +81,20 @@ $(function(){
 		$(".pay_info").hide();
 		$(".pay_select").show();
 	})
+
+	//>>确认支付方式
+	$("#pay").click(function () {
+		//>>获取到tr
+		var tr = $("#payment").find(".cur");
+		//>>获取到支付id和名称
+		var id = tr.find("input").val();
+		var name = tr.find("td:first").text();
+
+        //>>发起ajax请求
+        $.post("/order/ajax?filter=pay",{pay_type_id:id,pay_type_name:name},function (data) {
+            console.debug(data);
+        });
+    });
 
 	$("input[name=pay]").click(function(){
 		$(this).parent().parent().addClass("cur").siblings().removeClass("cur");
@@ -56,5 +114,6 @@ $(function(){
 	$(".personal").click(function(){
 		$(".company_input").attr("disabled","disabled");
 	});
+
 
 });

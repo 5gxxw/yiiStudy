@@ -43,12 +43,13 @@ class Goods extends \yii\db\ActiveRecord
     public function rules()
     {
         return [
-            [['name','logo','goods_category_id','brand_id','market_price','shop_price','stock','is_on_sale', 'status','sort'], 'required'],
+            [['name','goods_category_id','brand_id','market_price','shop_price','stock','is_on_sale', 'status','sort'], 'required'],
             [['goods_category_id', 'brand_id', 'stock', 'is_on_sale', 'status', 'sort'], 'integer'],
             [['market_price', 'shop_price'], 'number'],
             [['name'], 'string', 'max' => 50],
             [['sn'], 'string', 'max' => 15],
             [['logo'], 'string', 'max' => 150],
+            [['logo_file'],'safe'],
         ];
     }
 

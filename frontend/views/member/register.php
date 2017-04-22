@@ -1,4 +1,8 @@
-
+<?php
+/**
+ * @var $this \yii\web\View
+ */
+?>
 <div class="login w990 bc mt10 regist">
     <div class="login_hd">
         <h2>用户注册</h2>
@@ -40,27 +44,27 @@ echo $form->field($model,'tel',[
     'errorOptions' => ['tag' => 'p'],
     'template' => "{label}\n{input}\n{hint}\n{error}",
 ])->textInput(['class'=>'txt']);
-//>>定义成变量,加入template中
-//$button = '<input type="button" onclick="bindPhoneNum(this)" id="get_captcha" value="获取验证码" style="height: 25px;padding:0px 8px; margin-left:4px;"/>';
-//echo $form->field($model,'captcha_note',[
-//    'options' => ['tag' => 'li'],
-//    'errorOptions' => ['tag' => 'p'],
-//    'template' => "{label}\n{input}{$button}\n{hint}\n{error}",
-//])->textInput(['class'=>'txt','placeholder'=>'请输入短信验证码','disabled'=>"disabled",'id'=>'captcha']);
 
-$span = '<span>看不清？<a href="">换一张</a></span>';
+//>>定义成变量,加入template中
+$button = '<input type="button" id="get_captcha" value="获取验证码" style="height: 25px;padding:0px 8px; margin-left:4px;"/>';
+echo $form->field($model,'sms',[
+    'options' => ['tag' => 'li'],
+    'errorOptions' => ['tag' => 'p'],
+    'template' => "{label}\n{input}{$button}\n{hint}\n{error}",
+])->textInput(['class'=>'txt','placeholder'=>'请输入短信验证码','disabled'=>"disabled",'id'=>'captcha']);
+
 echo $form->field($model,'captcha',[
     'options' => ['tag' => 'li','class'=>'checkcode'],
     'errorOptions' => ['tag' => 'p'],
 ])->widget(yii\captcha\Captcha::className(),[
-        'template' => "{input} {image}{$span}",
+    'template' => "{input} {image}",
 ]);
 
 echo $form->field($model,'checked',[
     'options' => ['tag' => 'li'],  //包裹输入框的li标签
     'errorOptions' => ['tag' => 'p'],
     'template' => "{label}\n{input}\n{hint}\n{error}",
-])->checkbox().' 我已阅读并同意《用户注册协议》';
+])->checkbox(['label'=>'我已阅读并同意《用户注册协议》']);
 
 echo '<li><label for="">&nbsp;</label>'.\yii\helpers\Html::submitButton('',['class'=>'login_btn']).'</li>';
 echo '</ul>';
@@ -76,3 +80,36 @@ echo '</ul>';
 
     </div>
 </div>
+
+<?php
+//>>生成url
+$url = \yii\helpers\Url::to(['member/sms']);
+//>>
+$js = <<<JS
+        $("#get_captcha").click(function() {
+            //>>发起ajax(post)请求到服务器生成验证码
+            $.post("{$url}",{'tel':$("#member-tel").val()},function(data){
+                console.debug(data);
+            },'json');
+          //启用输入框
+			$('#captcha').prop('disabled',false);
+			
+			var time=30;
+			var interval = setInterval(function(){
+				time--;
+				if(time<=0){
+					clearInterval(interval);
+					var html = '获取验证码';
+					$('#get_captcha').prop('disabled',false);
+				} else{
+					var html = time + ' 秒后再次获取';
+					$('#get_captcha').prop('disabled',true);
+				}
+				
+				$('#get_captcha').val(html);
+			},1000);
+        });
+JS;
+
+$this->registerJs($js);
+?>

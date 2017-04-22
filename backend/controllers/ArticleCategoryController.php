@@ -4,7 +4,7 @@
  */
 namespace backend\controllers;
 
-use app\models\Article;
+use backend\models\Article;
 use backend\filter\MyAccessFilter;
 use backend\models\ArticleCategory;
 use yii\data\Pagination;
@@ -80,6 +80,12 @@ class ArticleCategoryController extends Controller
     public function actionDel($id)
     {
         $model = ArticleCategory::findOne(['id'=>$id]);
+        //>>查看文章分类下是否有文章
+        $article = Article::findOne(['article_category_id'=>$id]);
+        if ($article){
+            \Yii::$app->session->addFlash('success','分类下有文章,不能被删除');
+            return $this->redirect(['article-category/index']);
+        }
         $model->delete();
         \Yii::$app->session->addFlash('success','删除分类成功');
         return $this->redirect(['article-category/index']);

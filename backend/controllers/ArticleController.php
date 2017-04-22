@@ -4,8 +4,8 @@
  */
 namespace backend\controllers;
 
-use app\models\Article;
-use app\models\ArticleDetail;
+use backend\models\Article;
+use backend\models\ArticleDetail;
 use backend\filter\MyAccessFilter;
 use yii\data\Pagination;
 use yii\web\Controller;

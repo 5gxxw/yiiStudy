@@ -58,7 +58,6 @@ class GoodsGallery extends \yii\db\ActiveRecord
 
 
     public function logoUrl(){
-
         if(strpos($this->path,'http://') === false){
             $this->path = '@web/'.$this->path;
         }

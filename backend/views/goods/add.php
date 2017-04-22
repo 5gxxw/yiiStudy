@@ -13,40 +13,44 @@ use \xj\uploadify\Uploadify;
 $form = \yii\bootstrap\ActiveForm::begin();
 echo $form->field($model,'name');
 
-echo $form->field($model,'logo')->hiddenInput();
+
+echo $form->field($model,'logo_file')->fileInput();
+
+
+//echo $form->field($model,'logo')->hiddenInput();
 echo Html::img($model->logo,['style'=>'max-height:100px']);
 //外部TAG
-echo Html::fileInput('test', NULL, ['id' => 'test']);
-echo Uploadify::widget([
-    'url' => yii\helpers\Url::to(['s-upload']),
-    'id' => 'test',
-    'csrf' => true,
-    'renderTag' => false,
-    'jsOptions' => [
-        'width' => 120,
-        'height' => 40,
-        'onUploadError' => new JsExpression(<<<EOF
-function(file, errorCode, errorMsg, errorString) {
-    console.log('The file ' + file.name + ' could not be uploaded: ' + errorString + errorCode + errorMsg);
-}
-EOF
-        ),
-        'onUploadSuccess' => new JsExpression(<<<EOF
-function(file, data, response) {
-    data = JSON.parse(data);
-    if (data.error) {
-        console.log(data.msg);
-    } else {
-//        console.log(data);
-        $('#goods-logo').val(data.fileUrl);
-        $('img').attr('src',data.fileUrl);
-        //上传到服务器后,需要将文件上传到七牛云上
-    }
-}
-EOF
-        ),
-    ]
-]);
+//echo Html::fileInput('test', NULL, ['id' => 'test']);
+//echo Uploadify::widget([
+//    'url' => yii\helpers\Url::to(['s-upload']),
+//    'id' => 'test',
+//    'csrf' => true,
+//    'renderTag' => false,
+//    'jsOptions' => [
+//        'width' => 120,
+//        'height' => 40,
+//        'onUploadError' => new JsExpression(<<<EOF
+//function(file, errorCode, errorMsg, errorString) {
+//    console.log('The file ' + file.name + ' could not be uploaded: ' + errorString + errorCode + errorMsg);
+//}
+//EOF
+//        ),
+//        'onUploadSuccess' => new JsExpression(<<<EOF
+//function(file, data, response) {
+//    data = JSON.parse(data);
+//    if (data.error) {
+//        console.log(data.msg);
+//    } else {
+////        console.log(data);
+//        $('#goods-logo').val(data.fileUrl);
+//        $('img').attr('src',data.fileUrl);
+//        //上传到服务器后,需要将文件上传到七牛云上
+//    }
+//}
+//EOF
+//        ),
+//    ]
+//]);
 
 
 

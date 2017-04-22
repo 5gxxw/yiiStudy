@@ -28,7 +28,7 @@ class Member extends \yii\db\ActiveRecord implements IdentityInterface
 
     public $checked;
 
-    public $captcha_note;
+    public $sms;   //短信验证码
 
     public $password;
     /**
@@ -45,7 +45,7 @@ class Member extends \yii\db\ActiveRecord implements IdentityInterface
     public function rules()
     {
         return [
-            [['username', 'password', 'tel', 'email'], 'required'],
+            [['username', 'password', 'tel', 'email','checked'], 'required'],
             [['status', 'add_time', 'last_login_time'], 'integer'],
             [['username'], 'string', 'max' => 20,'min' => 3,],
             [['password'], 'string', 'max' => 255],
@@ -58,8 +58,8 @@ class Member extends \yii\db\ActiveRecord implements IdentityInterface
             [['email'], 'email'],
             [['repassword'],'compare','compareAttribute' => 'password','message'=>'两次密码不一致'],
             [['captcha'],'captcha'],    //用户输入的验证码
-//            [['captcha_note'],'captcha'], //短信验证码
-            [['checked'],'compare','compareAttribute' => 1,'message'=>'请先阅读用户注册协议'],
+            [['sms'],'validateSms'], //短信验证码
+            //[['checked'],'compare','compareAttribute' => 1,'message'=>'请先阅读用户注册协议'],
             [['tel'],'match','pattern'=>'/^[1][34578]\d{9}$/','message'=>'请填写正确的手机号码格式']
         ];
     }
@@ -83,9 +83,21 @@ class Member extends \yii\db\ActiveRecord implements IdentityInterface
             'auth_key' => '认证',
             'repassword' => '确认密码：',
             'captcha' => '验证码：',
-            'captcha_note' => '验证码',
+            'sms' => '验证码',
         ];
     }
+
+    /**
+     * 自定义验证短信验证码
+     */
+    public function validateSms(){
+        //>>1.获取session中的验证码和手机号码
+        //>>2.将传过来的验证码跟session中的做对比
+        if ($this->sms != Yii::$app->session->get('tel_'.$this->tel)){
+            $this->addError('sms','验证码输入错误');
+        }
+    }
+
 
     /**
      * 保存用户注册信息
